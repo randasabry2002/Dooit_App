@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:to_do_list_app_with_flutter/screens/AddTask.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return HomeStateScreen();
+    return HomeScreenState();
   }
 }
 
-class HomeStateScreen extends State<StatefulWidget> {
-  bool allListTaped = true; // all or pinned
+class HomeScreenState extends State<StatefulWidget> {
+  bool allTasksTaped = true; // all or pinned
   bool pinnedTaped = false; // all or pinned
   @override
   Widget build(BuildContext context) {
@@ -62,62 +62,67 @@ class HomeStateScreen extends State<StatefulWidget> {
               children: [
                 Padding(
                   padding: EdgeInsets.all(20.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              allListTaped = true;
-                              pinnedTaped = false;
-                            });
-                            // print('All List part tapped!');
-                          },
-                          child: Container(
-                            height: 55, // Adjust height as needed
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              color: allListTaped?Colors.black:Colors.grey,
-                            ),
-                            child: Text(
-                              'All List',
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              allListTaped = false;
-                              pinnedTaped = true;
-                            });
-                            allListTaped = false;
-                            pinnedTaped = true;
-                            // print('Pinned part tapped!');
-                          },
-                          child: Container(
-                            // margin: EdgeInsets.only(left: 20.0, right: 20.0),
-                            decoration: BoxDecoration(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(20)),
-                              color: pinnedTaped ? Colors.black : Colors.grey,
-                            ),
-                            height: 55, // Adjust height as needed
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Pinned',
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(20)),
+                      color: Color(0xffE5E5E5),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(flex: allTasksTaped?6:5,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                allTasksTaped = true;
+                                pinnedTaped = false;
+                              });
+                              // print('All Tasks part tapped!');
+                            },
+                            child: Container(
+                              height: 55, // Adjust height as needed
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                color: allTasksTaped?Colors.black:Color(0xc3e5e5e5),
+                              ),
+                              child: const Text(
+                                'All Tasks',
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.white),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        Expanded(flex: pinnedTaped ? 6:5,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                allTasksTaped = false;
+                                pinnedTaped = true;
+                              });
+                              // print('Pinned part tapped!');
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(20)),
+                                color: pinnedTaped ? Colors.black : Color(
+                                    0xc3e5e5e5),
+                              ),
+                              height: 55, // Adjust height as needed
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Pinned',
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Center(
@@ -130,7 +135,7 @@ class HomeStateScreen extends State<StatefulWidget> {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  "Create your first to-do list...",
+                  "Create your first to-do task...",
                   style: TextStyle(
                       fontSize: 20,
                       color: Colors.black,
@@ -140,7 +145,8 @@ class HomeStateScreen extends State<StatefulWidget> {
                 ),
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 50, 0, 50),
-                  width: 130,
+                  width: 150,
+                  // alignment: Alignment.center,
                   height: 44.34,
                   child: TextButton(
                     style: ButtonStyle(
@@ -154,17 +160,17 @@ class HomeStateScreen extends State<StatefulWidget> {
                           MaterialStateProperty.all<Color>(Colors.black),
                     ),
                     onPressed: () {
-                      Get.to(HomeScreen());
+                      Get.to(AddTask());
                     },
                     child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Icon(
                           Icons.add,
                           color: Colors.white,
                         ), // Prefix icon
-                        // SizedBox(width: 10),
                         Text(
-                          'New List ',
+                          'New Task ',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white,
