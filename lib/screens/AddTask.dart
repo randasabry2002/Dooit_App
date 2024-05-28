@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:to_do_list_app_with_flutter/screens/HomeScreen.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddTask extends StatefulWidget {
   @override
@@ -19,6 +20,7 @@ class AddTaskState extends State<StatefulWidget> {
   String label ="";
   bool pinned=false;
   DateTime _selectedDate = DateTime.now();
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -38,15 +40,16 @@ class AddTaskState extends State<StatefulWidget> {
     }
   }
 
-  // addTask() {
-  //   firestore.collection("Tasks").add({
-  //     "Title": _titleController.text.toString(),
-  //     "Due Date": _dateController.text,
-  //     "Name": _nameController.text.toString(),
-  //     "Date": DateTime.now(),
-  //     "Status": 0,
-  //   });
-  // }
+  addTask() {
+    firestore.collection("Tasks").add({
+      "Title": _titleController.text.toString(),
+      "Due Date": _dateController.text,
+      "Label": label,
+      "Pinned": pinned,
+      "Date": DateTime.now(),
+      "Done":false,
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -277,21 +280,21 @@ class AddTaskState extends State<StatefulWidget> {
                           MaterialStateProperty.all<Color>(Colors.black),
                         ),
                         onPressed: () {
-                          Get.to(HomeScreen());
-                          // if (_titleController.text == "") {
-                          //   ScaffoldMessenger.of(context)
-                          //       .showSnackBar(const SnackBar(
-                          //     content: Text("Enter Title"),
-                          //   ));
-                          // } else if (_nameController.text == "") {
-                          //   ScaffoldMessenger.of(context)
-                          //       .showSnackBar(const SnackBar(
-                          //     content: Text("Enter Name"),
-                          //   ));
-                          // } else {
-                          //   addTask();
-                          //   Get.offAll(HomePage());
-                          // }
+                          // Get.to(HomeScreen());
+                          if (_titleController.text == "") {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Enter Title"),
+                            ));
+                          } else if (label == "") {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Choose Label"),
+                            ));
+                          } else {
+                            addTask();
+                            Get.offAll(HomeScreen());
+                          }
                         },
                         child: Text(
                           'Save Task',

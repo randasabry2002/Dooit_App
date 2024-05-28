@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:to_do_list_app_with_flutter/screens/AddTask.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../Widgets/TaskItem.dart';
 class HomeScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -13,6 +15,8 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<StatefulWidget> {
   bool allTasksTaped = true; // all or pinned
   bool pinnedTaped = false; // all or pinned
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -125,14 +129,58 @@ class HomeScreenState extends State<StatefulWidget> {
                     ),
                   ),
                 ),
-                Center(
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 100,bottom: 100),
-                    child: Image.asset(
-                      'assets/images/todo_image.png',
-                    ),
-                  ),
+                ///**********************************
+                StreamBuilder<QuerySnapshot>(
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<TaskItem> allTasks = [];
+                      var responseTasks = snapshot.data!.docs;
+                      allTasks.clear();
+                      for (var i = 0; i < responseTasks.length; i++) {
+                        String title = responseTasks[i].get('Title');
+                        String? dueDate = responseTasks[i].get('Due Date');
+                        String? label = responseTasks[i].get('Label');
+                        bool? done=responseTasks[i].get('Done');
+                        bool? pinned=responseTasks[i].get('Pinned');
+
+                        // if (state == 1 || state == 0) {
+                          allTasks.add(TaskItem(
+                            title: title,
+                            dueDate: dueDate,
+                            label: label,
+                            id: responseTasks[i].id,
+                          ));
+                          print(responseTasks[i].id);
+                        // }
+                      }
+                      if (allTasks.isEmpty) {
+                        return Center(
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 100,bottom: 100),
+                            child: Image.asset(
+                              'assets/images/todo_image.png',
+                            ),
+                          ),
+                        );
+                      }
+                      return Expanded(
+                        child: ListView(
+                          physics: BouncingScrollPhysics(),
+                          // reverse: true,
+                          children: allTasks,
+                        ),
+                      );
+                    } else {
+                      return const Center(child: Text("Add Tasks"));
+                    }
+                  },
+                  stream: firestore
+                      .collection("Tasks")
+                      .orderBy("Date", descending: true)
+                      .snapshots(),
                 ),
+
+                ///******************************************
                 const SizedBox(height: 20),
                 const Text(
                   "Create your first to-do task...",
