@@ -154,24 +154,95 @@ class HomeScreenState extends State<StatefulWidget> {
                         // }
                       }
                       if (allTasks.isEmpty) {
-                        return Center(
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 100,bottom: 100),
-                            child: Image.asset(
-                              'assets/images/todo_image.png',
+                        return Column(
+                          children: [
+                            Center(
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 100,bottom: 100),
+                                child: Image.asset(
+                                  'assets/images/todo_image.png',
+                                ),
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              "Create your first to-do task...",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Graphik'),
+                              textAlign: TextAlign.center,
+                            ),
+                            Container(
+                              margin: EdgeInsets.fromLTRB(0, 50, 0, 50),
+                              width: 150,
+                              // alignment: Alignment.center,
+                              height: 44.34,
+                              child: TextButton(
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          10.0), // Adjust radius as needed
+                                    ),
+                                  ),
+                                  backgroundColor:
+                                  MaterialStateProperty.all<Color>(Colors.black),
+                                ),
+                                onPressed: () {
+                                  Get.to(AddTask());
+                                },
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    ), // Prefix icon
+                                    Text(
+                                      'New Task ',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.98,
+                                          fontFamily: 'Graphik'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
                         );
                       }
                       return Expanded(
-                        child: ListView(
-                          physics: BouncingScrollPhysics(),
-                          // reverse: true,
-                          children: allTasks,
+                        child: Stack(
+                          children: [
+                            ListView(
+                            physics: BouncingScrollPhysics(),
+                            children: allTasks,
+                            ),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: FloatingActionButton(
+                                  backgroundColor: Colors.black,
+                                  onPressed: () {
+                                    Get.to(AddTask());
+                                  },
+                                  child: const Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     } else {
-                      return const Center(child: Text("Add Tasks"));
+                      return const Center(child: Text("Wait a Second"));
                     }
                   },
                   stream: firestore
@@ -180,55 +251,6 @@ class HomeScreenState extends State<StatefulWidget> {
                       .snapshots(),
                 ),
 
-                ///******************************************
-                const SizedBox(height: 20),
-                const Text(
-                  "Create your first to-do task...",
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Graphik'),
-                  textAlign: TextAlign.center,
-                ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 50, 0, 50),
-                  width: 150,
-                  // alignment: Alignment.center,
-                  height: 44.34,
-                  child: TextButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              10.0), // Adjust radius as needed
-                        ),
-                      ),
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.black),
-                    ),
-                    onPressed: () {
-                      Get.to(AddTask());
-                    },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        ), // Prefix icon
-                        Text(
-                          'New Task ',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18.98,
-                              fontFamily: 'Graphik'),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
               ],
             )));
   }
